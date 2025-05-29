@@ -149,7 +149,7 @@ int main() {
             printf("Invalid option\n");
             break;
     }
-
+    seat availability
     return 0;
 }
 
