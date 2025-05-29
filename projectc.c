@@ -56,8 +56,9 @@ int main()
 
 #define FILE_PATH "D:\\Riya\\pro.txt"
 
-void remove_newline(char *str) {
-    //str[strcspn(str, "\n")] = '\0';
+void remove_newline(char *str) 
+{
+    str[strcspn(str, "\n")] = '\0'; //CHECKOUT
 }
 
 void signUp() {
@@ -66,12 +67,12 @@ void signUp() {
 
     printf("------Sign Up------\n");
     printf("Enter New Email:\n");
-    //fgets(email, sizeof(email), stdin);
-    //remove_newline(email);
+    fgets(email, sizeof(email), stdin); //CHECKOUT
+    remove_newline(email); //CHECKOUT
 
     printf("Enter New Password:\n");
-    //fgets(password, sizeof(password), stdin);
-    //remove_newline(password);
+    fgets(password, sizeof(password), stdin); //CHECKOUT
+    remove_newline(password); //CHECKOUT
 
     FILE *fp = fopen(FILE_PATH, "w");
     if (fp == NULL) {
@@ -98,17 +99,17 @@ int login() {
     }
 
     fgets(stored_email, sizeof(stored_email), fp);
-    //remove_newline(stored_email);
+    remove_newline(stored_email); //CHECKOUT
 
     fgets(stored_password, sizeof(stored_password), fp);
-    //remove_newline(stored_password);
+    remove_newline(stored_password);  //CHECKOUT
     fclose(fp);
 
     printf("------Log in------\n");
 
     printf("Enter Email:\n");
-    //fgets(email, sizeof(email), stdin);
-    //remove_newline(email);
+    fgets(email, sizeof(email), stdin); //CHECKOUT
+    remove_newline(email);  //CHECKOUT
 
     if (strcmp(email, stored_email) != 0) {
         printf("Incorrect email\n");
@@ -116,8 +117,8 @@ int login() {
     }
 
     printf("Enter Password:\n");
-    //fgets(password, sizeof(password), stdin);
-    //remove_newline(password);
+    fgets(password, sizeof(password), stdin); //CHECKOUT
+    remove_newline(password); //CHECKOUT
 
     if (strcmp(password, stored_password) != 0) {
         printf("Password incorrect\n");
@@ -135,7 +136,7 @@ int main() {
     printf("2. Log In\n");
     printf("Choose an option: ");
     scanf("%d", &choice);
-    //getchar();  // To consume the newline character left by scanf
+    getchar();  // To consume the newline character left by scanf //CHECKOUT
 
     switch (choice) {
         case 1:
@@ -149,7 +150,8 @@ int main() {
             printf("Invalid option\n");
             break;
     }
-    seat availability
+    
+    //seat availability
     return 0;
 }
 
