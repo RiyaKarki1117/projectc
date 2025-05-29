@@ -56,9 +56,15 @@ int main()
 
 #define FILE_PATH "D:\\Riya\\pro.txt"
 
+<<<<<<< HEAD
 void remove_newline(char *str)
 {
     //str[strcspn(str, "\n")] = '\0';
+=======
+void remove_newline(char *str) 
+{
+    str[strcspn(str, "\n")] = '\0'; //CHECKOUT
+>>>>>>> f16dae24442c4e3f4997c6ecd92ff16b1295c376
 }
 
 void signUp() 
@@ -67,11 +73,20 @@ void signUp()
     char password[50];
     printf("------Sign Up------\n");
     printf("Enter New Email:\n");
+<<<<<<< HEAD
     //fgets(email, sizeof(email), stdin);
     remove_newline(email);
     printf("Enter New Password:\n");
     //fgets(password, sizeof(password), stdin);
     remove_newline(password);
+=======
+    fgets(email, sizeof(email), stdin); //CHECKOUT
+    remove_newline(email); //CHECKOUT
+
+    printf("Enter New Password:\n");
+    fgets(password, sizeof(password), stdin); //CHECKOUT
+    remove_newline(password); //CHECKOUT
+>>>>>>> f16dae24442c4e3f4997c6ecd92ff16b1295c376
 
     FILE *fp = fopen(FILE_PATH, "w");
     if (fp == NULL) 
@@ -99,17 +114,29 @@ int login()
     }
 
     fgets(stored_email, sizeof(stored_email), fp);
+<<<<<<< HEAD
     remove_newline(stored_email);
 
     fgets(stored_password, sizeof(stored_password), fp);
     remove_newline(stored_password);
+=======
+    remove_newline(stored_email); //CHECKOUT
+
+    fgets(stored_password, sizeof(stored_password), fp);
+    remove_newline(stored_password);  //CHECKOUT
+>>>>>>> f16dae24442c4e3f4997c6ecd92ff16b1295c376
     fclose(fp);
 
     printf("------Log in------\n");
 
     printf("Enter Email:\n");
+<<<<<<< HEAD
     //fgets(email, sizeof(email), stdin);
     remove_newline(email);//ensures the string becomes clean like "abc@example.com" (without \n).
+=======
+    fgets(email, sizeof(email), stdin); //CHECKOUT
+    remove_newline(email);  //CHECKOUT
+>>>>>>> f16dae24442c4e3f4997c6ecd92ff16b1295c376
 
     if (strcmp(email, stored_email) != 0) 
 	{
@@ -118,8 +145,13 @@ int login()
     }
 
     printf("Enter Password:\n");
+<<<<<<< HEAD
     //fgets(password, sizeof(password), stdin);
     remove_newline(password);
+=======
+    fgets(password, sizeof(password), stdin); //CHECKOUT
+    remove_newline(password); //CHECKOUT
+>>>>>>> f16dae24442c4e3f4997c6ecd92ff16b1295c376
 
     if (strcmp(password, stored_password) != 0)
     {
@@ -138,9 +170,15 @@ int main()
     printf("2. Log In\n");
     printf("Choose an option: ");
     scanf("%d", &choice);
+<<<<<<< HEAD
     getchar();  // To consume the newline character left by scanf
     switch (choice)
 	{
+=======
+    getchar();  // To consume the newline character left by scanf //CHECKOUT
+
+    switch (choice) {
+>>>>>>> f16dae24442c4e3f4997c6ecd92ff16b1295c376
         case 1:
             signUp();
             login(); // Optional: ask to log in right after sign up
@@ -152,6 +190,11 @@ int main()
             printf("Invalid option\n");
             break;
     }
+<<<<<<< HEAD
+=======
+    
+    //seat availability
+>>>>>>> f16dae24442c4e3f4997c6ecd92ff16b1295c376
     return 0;
 }
 
