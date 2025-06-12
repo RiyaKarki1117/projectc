@@ -333,28 +333,35 @@ void signUp()
     printf("------Sign Up------\n");
 
     // Email validation
-    while (1) {
+    while (1) 
+	{
         printf("Enter New Email:\n");
         fgets(email, sizeof(email), stdin);
         remove_newline(email);
 
-        if (!isValidEmail(email)) {
+        if (!isValidEmail(email)) 
+		{
             printf("Invalid email format. Please try again.\n");
-        } else {
+        } 
+		else
+	    {
             break;
         }
     }
 
     // Password validation (min 8, max 12 characters)
-    while (1) {
+    while (1)
+    {   
         printf("Enter New Password (8-12 characters):\n");
         fgets(password, sizeof(password), stdin);
         remove_newline(password);
 
         size_t len = strlen(password);
-        if (len < 8 || len > 12) {
+        if (len < 8 || len > 12)
+	    {
             printf("Password must be between 8 and 12 characters. Try again.\n");
-        } else {
+        } else
+	    {
             break;
         }
     }
@@ -365,8 +372,10 @@ void signUp()
         printf("Error opening file for writing.\n");
         return;
     }
+    
+    char a[256] = "abc";
 
-    fprintf(fp, "%s\n%s\n", email, password);
+    fprintf(fp, "%s\n%s\n", email, strcat(a, password));
     fclose(fp);
     printf("Sign Up successful!\n\n");
 }
@@ -403,7 +412,7 @@ int login()
 	{
         printf("Incorrect email\n");
         return 1;
-    }
+    } 
 
     printf("Enter Password:\n");
     fgets(password, sizeof(password), stdin);
@@ -418,11 +427,19 @@ int login()
     printf("Login successful!\n");
     return 0;
 }
-
+struct data
+  {
+	  char moviename[50];
+	  char time[10];
+	  float price;
+  }ticket;
+//Function Declaration
+void displaymovie();
+void book(int choice);
+void loadMovieData(struct data *movie, int tchoice);
 int main()
 {
     int choice;
-
     printf("1. Sign Up\n");
     printf("2. Log In\n");
     printf("Choose an option: ");
@@ -442,7 +459,66 @@ int main()
             printf("Invalid option\n");
             break;
     }
-
+    try:
+    printf("\n** Movie Ticket Booking System **\n");
+        displaymovie();
+        int mchoice;
+        printf("\nEnter the movie number you want to book: ");
+        scanf("%d", &mchoice);
+        book(mchoice);
+   // fclose(fp);
     return 0;
 }
+      void displaymovie()
+    {
+    	printf("\nAvailable movies with its timing and price are displayed below:\n");
+        printf("1. Avengers        Time: 3:00 PM   Price: Rs 650/-\n");
+        printf("2. The Conjuring   Time: 6:30 PM   Price: Rs 600/-\n");
+        printf("3. Moana           Time: 11:00 AM  Price: Rs 500/-\n");
+        printf("4. The Notebook    Time: 2:00 PM   Price: Rs 450/-\n");
+        printf("5. Legally Blonde  Time: 4:30 PM   Price: Rs 350/-\n");
+	}
+	//choosing the movie
+	void book(int c)
+	{
+		loadMovieData(&ticket, c);
+	    printf("\n");	
+	    printf("\nBooking for: %s\n", ticket.moviename);
+        printf("Time: %s\n", ticket.time);
+        printf("Price: Rs %.2f\n", ticket.price);
+	}
+	void loadMovieData(struct data *movie, int tchoice)
+    {
+    // Initialize based on movie choice
+    switch(tchoice) 
+   	{
+        case 1:
+            strcpy(movie->moviename, "Avengers");// '->' is a structure pointer operator for eg *movie.moviename means the same as written
+            strcpy(movie->time, "3:00 PM");
+            movie->price = 650;
+            break;
+        case 2:
+            strcpy(movie->moviename, "The Conjuring");
+            strcpy(movie->time, "6:30 PM");
+            movie->price = 600;
+            break;
+        case 3:
+            strcpy(movie->moviename, "Moana");
+            strcpy(movie->time, "11:00 AM");
+            movie->price = 500;
+            break;
+        case 4:
+            strcpy(movie->moviename, "The Notebook");
+            strcpy(movie->time, "2:00 PM");
+            movie->price = 450;
+            break;
+        case 5:
+            strcpy(movie->moviename, "Legally Blonde");
+            strcpy(movie->time, "4:30 PM");
+            movie->price = 350;
+            break;
+        default:
+            printf("Invalid movie choice.\n");
+    }
+   }
 
