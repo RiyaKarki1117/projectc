@@ -372,10 +372,8 @@ void signUp()
         printf("Error opening file for writing.\n");
         return;
     }
-    
-    char a[256] = "abc";
 
-    fprintf(fp, "%s\n%s\n", email, strcat(a, password));
+    fprintf(fp, "%s\n%s\n", email, password));
     fclose(fp);
     printf("Sign Up successful!\n\n");
 }
