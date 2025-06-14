@@ -377,7 +377,11 @@ void signUp()
         return;
     }
 
+<<<<<<< HEAD
     fprintf(fp, "%s\n%s\n", email, password);
+=======
+    fprintf(fp, "%s\n%s\n", email, password));
+>>>>>>> f026bdfe1b6cbef87c5697e31d7637c5dbcabeea
     fclose(fp);
     printf("Sign Up successful!\n\n");
 }
@@ -453,6 +457,7 @@ int main()
             printf("Invalid option\n");
             break;
     }
+<<<<<<< HEAD
 // Define seat types (could be read from config, but fixed for simplicity)
 typedef enum {
     SEAT_TYPE_STANDARD,
@@ -574,6 +579,70 @@ int main() {
 
     return 0;
 }
+=======
+    printf("\n** Movie Ticket Booking System **\n");
+        displaymovie();
+        int mchoice;
+        printf("\nEnter the movie number you want to book: ");
+        scanf("%d", &mchoice);
+        book(mchoice);
+   // fclose(fp);
+    return 0;
+}
+//function definitions
+      void displaymovie()
+    {
+    	printf("\nAvailable movies with its timing and price are displayed below:\n");
+        printf("1. Avengers        Time: 3:00 PM   Price: Rs 650/-\n");
+        printf("2. The Conjuring   Time: 6:30 PM   Price: Rs 600/-\n");
+        printf("3. Moana           Time: 11:00 AM  Price: Rs 500/-\n");
+        printf("4. The Notebook    Time: 2:00 PM   Price: Rs 450/-\n");
+        printf("5. Legally Blonde  Time: 4:30 PM   Price: Rs 350/-\n");
+	}
+	//choosing the movie
+	void book(int c)
+	{
+		loadMovieData(&ticket, c);
+	    printf("\n");	
+	    printf("\nBooking for: %s\n", ticket.moviename);
+        printf("Time: %s\n", ticket.time);
+        printf("Price: Rs %.2f\n", ticket.price);
+	}
+	void loadMovieData(struct data *movie, int tchoice)
+    {
+    // Initialize based on movie choice
+    switch(tchoice) 
+   	{
+        case 1:
+            strcpy(movie->moviename, "Avengers");// '->' is a structure pointer operator for eg *movie.moviename means the same as written
+            strcpy(movie->time, "3:00 PM");
+            movie->price = 650;
+            break;
+        case 2:
+            strcpy(movie->moviename, "The Conjuring");
+            strcpy(movie->time, "6:30 PM");
+            movie->price = 600;
+            break;
+        case 3:
+            strcpy(movie->moviename, "Moana");
+            strcpy(movie->time, "11:00 AM");
+            movie->price = 500;
+            break;
+        case 4:
+            strcpy(movie->moviename, "The Notebook");
+            strcpy(movie->time, "2:00 PM");
+            movie->price = 450;
+            break;
+        case 5:
+            strcpy(movie->moviename, "Legally Blonde");
+            strcpy(movie->time, "4:30 PM");
+            movie->price = 350;
+            break;
+        default:
+            printf("Invalid movie choice.\n");
+    }
+   }
+>>>>>>> f026bdfe1b6cbef87c5697e31d7637c5dbcabeea
 
 // --- Function Implementations ---
 
