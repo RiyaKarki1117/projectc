@@ -301,6 +301,7 @@ int main()
 #include <ctype.h>
 
 #define FILE_PATH "D:\\Riya\\pro.txt"
+#define MAX_SEATS 10
 
 // Remove the newline character at the end of a string
 void remove_newline(char *str) 
@@ -372,10 +373,8 @@ void signUp()
         printf("Error opening file for writing.\n");
         return;
     }
-    
-    char a[256] = "abc";
 
-    fprintf(fp, "%s\n%s\n", email, strcat(a, password));
+    fprintf(fp, "%s\n%s\n", email, password);
     fclose(fp);
     printf("Sign Up successful!\n\n");
 }
@@ -437,9 +436,15 @@ struct data
 void displaymovie();
 void book(int choice);
 void loadMovieData(struct data *movie, int tchoice);
+void initializeMovieFiles() ;
+int isSeatBooked(int movieChoice, int seatNumber);
+void bookSeat(int movieChoice, int seatNumber);
+void booking(int movieChoice);
 int main()
 {
+	initializeMovieFiles();
     int choice;
+    int seatNumber;
     printf("1. Sign Up\n");
     printf("2. Log In\n");
     printf("Choose an option: ");
@@ -459,16 +464,22 @@ int main()
             printf("Invalid option\n");
             break;
     }
-    try:
     printf("\n** Movie Ticket Booking System **\n");
         displaymovie();
         int mchoice;
         printf("\nEnter the movie number you want to book: ");
         scanf("%d", &mchoice);
-        book(mchoice);
-   // fclose(fp);
+//        book(mchoice);
+//        displaySeats(mchoice);
+//        printf("\nEnter the seat number you want to book: ");
+//        scanf("%d",&seatNumber);
+//        bookSeat(mchoice,seatNumber);
+      booking(mchoice);  // Call the proper booking function
+
+   //fclose(fp);
     return 0;
 }
+//function definitions
       void displaymovie()
     {
     	printf("\nAvailable movies with its timing and price are displayed below:\n");
@@ -487,7 +498,7 @@ int main()
         printf("Time: %s\n", ticket.time);
         printf("Price: Rs %.2f\n", ticket.price);
 	}
-	void loadMovieData(struct data *movie, int tchoice)
+		void loadMovieData(struct data *movie, int tchoice)
     {
     // Initialize based on movie choice
     switch(tchoice) 
@@ -521,4 +532,94 @@ int main()
             printf("Invalid movie choice.\n");
     }
    }
+
+
+// Create seat booking files for each movie
+void initializeMovieFiles() 
+{
+	int i=0;
+    for (i = 1; i <= 5; i++) 
+	{
+		FILE *fp;
+        char filename[20];
+        sprintf(filename, "movie%d.txt", i);
+        fp=fopen(filename, "a");  // Create if not exists
+        if (fp) fclose(fp);
+    }
+}
+
+// Check if a seat is already booked
+int isSeatBooked(int movieChoice, int seatNumber) 
+{
+    char filename[20];
+    sprintf(filename, "movie%d.txt", movieChoice);
+    FILE *fp = fopen(filename, "r");
+    if (!fp) return 0;
+
+    int booked;
+    while (fscanf(fp, "%d", &booked) != EOF) 
+	{
+        if (booked == seatNumber) 
+		{
+            fclose(fp);
+            return 1;
+        }
+    }
+
+    fclose(fp);
+    return 0;
+}
+
+// Save a booked seat to file
+void bookSeat(int movieChoice, int seatNumber) 
+{
+    char filename[20];
+    sprintf(filename, "movie%d.txt", movieChoice);
+    FILE *fp = fopen(filename, "a");
+    if (!fp)
+	{
+        printf("Error booking seat.\n");
+        return;
+    }
+
+    fprintf(fp, "%d\n", seatNumber);
+    fclose(fp);
+}
+
+// Modified book() function
+void booking(int c) 
+{
+	int i=0;
+    loadMovieData(&ticket, c);
+    printf("\nBooking for: %s\nTime: %s\nPrice: Rs %.2f\n", ticket.moviename, ticket.time, ticket.price);
+
+    printf("\nAvailable seats (1 to %d):\n", MAX_SEATS);
+    for ( i = 1; i <= MAX_SEATS; i++) 
+	{
+        if (isSeatBooked(c, i))
+            printf("[X] ");
+        else
+            printf("[%d] ", i);
+    }
+
+    int seat;
+    printf("\n\nChoose a seat number to book: ");
+    scanf("%d", &seat);
+
+    if (seat < 1 || seat > MAX_SEATS)
+    {
+        printf("Invalid seat number.\n");
+        return;
+    }
+
+    if (isSeatBooked(c, seat)) 
+	{
+        printf("Seat already booked. Please try another.\n");
+    } 
+	else 
+	{
+        bookSeat(c, seat);
+        printf("Seat %d successfully booked!\n", seat);
+    }
+}
 
