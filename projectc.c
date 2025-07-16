@@ -301,266 +301,214 @@ int main()
 #include <ctype.h>
 
 #define FILE_PATH "D:\\Riya\\pro.txt"
-#define MAX_SEATS 10
-
-// Remove the newline character at the end of a string
-void remove_newline(char *str) 
-{
+#define ROWS 5
+#define COLS 6
+ int i=0,j=0;
+ char row,col;
+// Remove newline character
+void remove_newline(char *str) {
     str[strcspn(str, "\n")] = '\0';
 }
 
-// Check if email format is valid
-int isValidEmail(const char *email) 
-{
+// Validate email
+int isValidEmail(const char *email) {
     const char *at = strchr(email, '@');
-    if (at == NULL || at == email) 
-        return 0;  // No '@' or '@' at the start
-
+    if (at == NULL || at == email) return 0;
     const char *dot = strchr(at, '.');
-    if (dot == NULL || dot == at + 1 || dot[1] == '\0') 
-        return 0;  // No '.' after '@', or directly after '@', or at end
-
-    if (strchr(dot + 1, '.') != NULL) 
-        return 0;  // Optional: Disallow multiple '.' after '@'
-
+    if (dot == NULL || dot == at + 1 || dot[1] == '\0') return 0;
+    if (strchr(dot + 1, '.') != NULL) return 0;
     return 1;
 }
 
-void signUp() 
-{
-     char email[50];
-    char password[50];
+// Signup function
+void signUp() {
+    char email[50], password[50], line[100];
+    int exists = 0;
 
     printf("------Sign Up------\n");
 
-    // Email validation
-    while (1) 
-	{
+    FILE *fp = fopen(FILE_PATH, "a+"); // Open for reading + appending
+    if (!fp) {
+        printf("Error opening file.\n");
+        return;
+    }
+
+    while (1) {
         printf("Enter New Email:\n");
         fgets(email, sizeof(email), stdin);
         remove_newline(email);
 
-        if (!isValidEmail(email)) 
-		{
-            printf("Invalid email format. Please try again.\n");
-        } 
-		else
-	    {
+        if (!isValidEmail(email)) {
+            printf("Invalid email format. Try again.\n");
+            continue;
+        }
+
+        // Check if email already exists
+        rewind(fp); // Move to beginning
+        while (fgets(line, sizeof(line), fp)) {
+            char stored_email[50];
+            sscanf(line, "%[^,],%*s", stored_email); // extract email
+            if (strcmp(email, stored_email) == 0) {
+                exists = 1;
+                break;
+            }
+        }
+
+        if (exists) {
+            printf("Email already registered. Try another.\n");
+            fclose(fp);
+            return;
+        } else {
             break;
         }
     }
 
-    // Password validation (min 8, max 12 characters)
-    while (1)
-    {   
+    while (1) {
         printf("Enter New Password (8-12 characters):\n");
         fgets(password, sizeof(password), stdin);
         remove_newline(password);
 
         size_t len = strlen(password);
-        if (len < 8 || len > 12)
-	    {
+        if (len < 8 || len > 12) {
             printf("Password must be between 8 and 12 characters. Try again.\n");
-        } else
-	    {
-            break;
-        }
+        } else break;
     }
 
-    FILE *fp = fopen(FILE_PATH, "w");
-    if (fp == NULL) 
-    {
-        printf("Error opening file for writing.\n");
-        return;
-    }
-
-    fprintf(fp, "%s\n%s\n", email, password);
+    fprintf(fp, "%s,%s\n", email, password);
     fclose(fp);
     printf("Sign Up successful!\n\n");
 }
 
-int login() 
-{
-    char email[50];
-    char password[50];
-    char stored_email[50];
-    char stored_password[50];
+// Login function
+int login() {
+    char email[50], password[50], line[100];
+    int found = 0;
+
+    printf("------Log in------\n");
 
     FILE *fp = fopen(FILE_PATH, "r");
-    if (fp == NULL) 
-	{
+    if (!fp) {
         printf("No account found. Please sign up first.\n");
         return 1;
     }
-
-    fgets(stored_email, sizeof(stored_email), fp);
-    remove_newline(stored_email);
-
-    fgets(stored_password, sizeof(stored_password), fp);
-    remove_newline(stored_password);
-
-    fclose(fp);
-
-    printf("------Log in------\n");
 
     printf("Enter Email:\n");
     fgets(email, sizeof(email), stdin);
     remove_newline(email);
 
-    if (strcmp(email, stored_email) != 0) 
-	{
-        printf("Incorrect email\n");
-        return 1;
-    } 
-
     printf("Enter Password:\n");
     fgets(password, sizeof(password), stdin);
     remove_newline(password);
 
-    if (strcmp(password, stored_password) != 0)
-    {
-        printf("Password incorrect\n");
-        return 1;
+    while (fgets(line, sizeof(line), fp)) {
+        char stored_email[50], stored_password[50];
+        sscanf(line, "%[^,],%s", stored_email, stored_password);
+
+        if (strcmp(email, stored_email) == 0 && strcmp(password, stored_password) == 0) {
+            found = 1;
+            break;
+        }
     }
 
-    printf("Login successful!\n");
-    return 0;
-}
-struct data
-  {
-	  char moviename[50];
-	  char time[10];
-	  float price;
-  }ticket;
-//Function Declaration
-void displaymovie();
-void book(int choice);
-void loadMovieData(struct data *movie, int tchoice);
-void initializeMovieFiles() ;
-int isSeatBooked(int movieChoice, int seatNumber);
-void bookSeat(int movieChoice, int seatNumber);
-void booking(int movieChoice);
-int main()
-{
-	initializeMovieFiles();
-    int choice;
-    int seatNumber;
-    printf("1. Sign Up\n");
-    printf("2. Log In\n");
-    printf("Choose an option: ");
-    scanf("%d", &choice);
-    getchar();  // Consume the newline left by scanf
+    fclose(fp);
 
-    switch (choice) 
-	{
+    if (found) {
+        printf("Login successful!\n");
+        return 0;
+    } else {
+        printf("Invalid email or password.\n");
+        return 1;
+    }
+}
+
+struct data {
+    char moviename[50];
+    char time[10];
+    float price;
+   
+} ticket;
+
+// Function declarations
+void displaymovie();
+void loadMovieData(struct data *movie, int tchoice);
+void initializeMovieFiles();
+int isSeatBooked(int movieChoice, const char *seatCode);
+void bookSeat(int movieChoice, const char *seatCode);
+void booking(int movieChoice);
+
+int main() {
+    initializeMovieFiles();
+    int choice;
+    printf("1. Sign Up\n2. Log In\nChoose an option: ");
+    scanf("%d", &choice);
+    getchar();
+
+    switch (choice) {
         case 1:
             signUp();
-            login(); // Optional: Prompt to log in after sign-up
+            if (login() != 0) return 1;
             break;
         case 2:
-            login();
+            if (login() != 0) return 1;
             break;
         default:
             printf("Invalid option\n");
-            break;
+            return 1;
     }
-    printf("\n** Movie Ticket Booking System **\n");
-        displaymovie();
-        int mchoice;
-        printf("\nEnter the movie number you want to book: ");
-        scanf("%d", &mchoice);
-//        book(mchoice);
-//        displaySeats(mchoice);
-//        printf("\nEnter the seat number you want to book: ");
-//        scanf("%d",&seatNumber);
-//        bookSeat(mchoice,seatNumber);
-      booking(mchoice);  // Call the proper booking function
 
-   //fclose(fp);
+    printf("\n** Movie Ticket Booking System **\n");
+    displaymovie();
+    int mchoice;
+    printf("\nEnter the movie number you want to book: ");
+    scanf("%d", &mchoice);
+    getchar();
+    booking(mchoice);
+
     return 0;
 }
-//function definitions
-      void displaymovie()
-    {
-    	printf("\nAvailable movies with its timing and price are displayed below:\n");
-        printf("1. Avengers        Time: 3:00 PM   Price: Rs 650/-\n");
-        printf("2. The Conjuring   Time: 6:30 PM   Price: Rs 600/-\n");
-        printf("3. Moana           Time: 11:00 AM  Price: Rs 500/-\n");
-        printf("4. The Notebook    Time: 2:00 PM   Price: Rs 450/-\n");
-        printf("5. Legally Blonde  Time: 4:30 PM   Price: Rs 350/-\n");
-	}
-	//choosing the movie
-	void book(int c)
-	{
-		loadMovieData(&ticket, c);
-	    printf("\n");	
-	    printf("\nBooking for: %s\n", ticket.moviename);
-        printf("Time: %s\n", ticket.time);
-        printf("Price: Rs %.2f\n", ticket.price);
-	}
-		void loadMovieData(struct data *movie, int tchoice)
-    {
-    // Initialize based on movie choice
-    switch(tchoice) 
-   	{
-        case 1:
-            strcpy(movie->moviename, "Avengers");// '->' is a structure pointer operator for eg *movie.moviename means the same as written
-            strcpy(movie->time, "3:00 PM");
-            movie->price = 650;
-            break;
-        case 2:
-            strcpy(movie->moviename, "The Conjuring");
-            strcpy(movie->time, "6:30 PM");
-            movie->price = 600;
-            break;
-        case 3:
-            strcpy(movie->moviename, "Moana");
-            strcpy(movie->time, "11:00 AM");
-            movie->price = 500;
-            break;
-        case 4:
-            strcpy(movie->moviename, "The Notebook");
-            strcpy(movie->time, "2:00 PM");
-            movie->price = 450;
-            break;
-        case 5:
-            strcpy(movie->moviename, "Legally Blonde");
-            strcpy(movie->time, "4:30 PM");
-            movie->price = 350;
-            break;
-        default:
-            printf("Invalid movie choice.\n");
+
+// Movie list
+void displaymovie() {
+    printf("\nAvailable movies:\n");
+    printf("1. Avengers        Time: 3:00 PM   Price: Rs 650/-\n");
+    printf("2. The Conjuring   Time: 6:30 PM   Price: Rs 600/-\n");
+    printf("3. Moana           Time: 11:00 AM  Price: Rs 500/-\n");
+    printf("4. The Notebook    Time: 2:00 PM   Price: Rs 450/-\n");
+    printf("5. Legally Blonde  Time: 4:30 PM   Price: Rs 350/-\n");
+}
+
+// Load movie info
+void loadMovieData(struct data *movie, int tchoice) {
+    switch(tchoice) {
+        case 1: strcpy(movie->moviename, "Avengers"); strcpy(movie->time, "3:00 PM"); movie->price = 650; break;
+        case 2: strcpy(movie->moviename, "The Conjuring"); strcpy(movie->time, "6:30 PM"); movie->price = 600; break;
+        case 3: strcpy(movie->moviename, "Moana"); strcpy(movie->time, "11:00 AM"); movie->price = 500; break;
+        case 4: strcpy(movie->moviename, "The Notebook"); strcpy(movie->time, "2:00 PM"); movie->price = 450; break;
+        case 5: strcpy(movie->moviename, "Legally Blonde"); strcpy(movie->time, "4:30 PM"); movie->price = 350; break;
+        default: printf("Invalid movie choice.\n");
     }
-   }
+}
 
-
-// Create seat booking files for each movie
-void initializeMovieFiles() 
-{
-	int i=0;
-    for (i = 1; i <= 5; i++) 
-	{
-		FILE *fp;
+// Init seat files
+void initializeMovieFiles() {
+    for (i = 1; i <= 5; i++) {
         char filename[20];
         sprintf(filename, "movie%d.txt", i);
-        fp=fopen(filename, "a");  // Create if not exists
+        FILE *fp = fopen(filename, "a");
         if (fp) fclose(fp);
     }
 }
 
-// Check if a seat is already booked
-int isSeatBooked(int movieChoice, int seatNumber) 
-{
+// Check if seat is booked
+int isSeatBooked(int movieChoice, const char *seatCode) {
     char filename[20];
     sprintf(filename, "movie%d.txt", movieChoice);
     FILE *fp = fopen(filename, "r");
     if (!fp) return 0;
 
-    int booked;
-    while (fscanf(fp, "%d", &booked) != EOF) 
-	{
-        if (booked == seatNumber) 
-		{
+    char booked[4];
+    while (fscanf(fp, "%s", booked) != EOF) {
+        if (strcmp(booked, seatCode) == 0) {
             fclose(fp);
             return 1;
         }
@@ -570,58 +518,56 @@ int isSeatBooked(int movieChoice, int seatNumber)
     return 0;
 }
 
-// Save a booked seat to file
-void bookSeat(int movieChoice, int seatNumber) 
-{
+// Book a seat
+void bookSeat(int movieChoice, const char *seatCode) {
     char filename[20];
     sprintf(filename, "movie%d.txt", movieChoice);
     FILE *fp = fopen(filename, "a");
-    if (!fp)
-	{
+    if (!fp) {
         printf("Error booking seat.\n");
         return;
     }
 
-    fprintf(fp, "%d\n", seatNumber);
+    fprintf(fp, "%s\n", seatCode);
     fclose(fp);
 }
 
-// Modified book() function
-void booking(int c) 
-{
-	int i=0;
+// Booking flow
+void booking(int c) {
     loadMovieData(&ticket, c);
     printf("\nBooking for: %s\nTime: %s\nPrice: Rs %.2f\n", ticket.moviename, ticket.time, ticket.price);
 
-    printf("\nAvailable seats (1 to %d):\n", MAX_SEATS);
-    for ( i = 1; i <= MAX_SEATS; i++) 
-	{
-        if (isSeatBooked(c, i))
-            printf("[X] ");
-        else
-            printf("[%d] ", i);
+    printf("\nAvailable seats (A1 to E6):\n");
+    char seatCode[4];
+    for (row = 'A'; row <= 'E'; row++) {
+        for (col = 1; col <= 6; col++) {
+            sprintf(seatCode, "%c%d", row, col);
+            if (isSeatBooked(c, seatCode))
+                printf("[ X ] ");
+            else
+                printf("[%s] ", seatCode);
+        }
+        printf("\n");
     }
 
-    int seat;
-    again:
-    printf("\nChoose a seat number to book: ");
-    scanf("%d", &seat);
+    char userSeat[4];
+    while (1) {
+        printf("\nChoose a seat code to book (e.g., A1, B4): ");
+        scanf("%s", userSeat);
 
-    if (seat < 1 || seat > MAX_SEATS)
-    {
-        printf("Invalid seat number.\n");
-        return;
-    }
+        if (strlen(userSeat) < 2 || strlen(userSeat) > 3 ||
+            userSeat[0] < 'A' || userSeat[0] > 'E' ||
+            atoi(&userSeat[1]) < 1 || atoi(&userSeat[1]) > 6) {
+            printf("Invalid seat code.\n");
+            continue;
+        }
 
-    if (isSeatBooked(c, seat)) 
-	{
-        printf("Seat already booked. Please try another.\n");
-        goto again;
-    } 
-	else 
-	{
-        bookSeat(c, seat);
-        printf("Seat %d successfully booked!\n", seat);
+        if (isSeatBooked(c, userSeat)) {
+            printf("Seat already booked. Please try another.\n");
+        } else {
+            bookSeat(c, userSeat);
+            printf("Seat %s successfully booked!\n", userSeat);
+            break;
+        }
     }
 }
-
