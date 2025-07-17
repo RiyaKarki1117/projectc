@@ -43,11 +43,12 @@ void signUp()
     printf("------Sign Up------\n");
 
     FILE *fp = fopen(FILE_PATH, "a+"); // Open for reading + appending
-    if (!fp) {
+    if (!fp) 
+	{
         printf("Error opening file.\n");
         return;
     }
-
+    
     while (1) 
 	{
         printf("Enter New Email:\n");
@@ -78,8 +79,8 @@ void signUp()
             fclose(fp);
             return;
         }
-	    else
-	    {
+		else 
+		{
             break;
         }
     }
@@ -89,7 +90,6 @@ void signUp()
         printf("Enter New Password (8-12 characters):\n");
         fgets(password, sizeof(password), stdin);//Reads the password input from user and stores it in the password array.
         remove_newline(password);
-
         size_t len = strlen(password);//Calculates the length of the password (excluding \0)
         if (len < 8 || len > 12) 
 		{
@@ -106,7 +106,8 @@ void signUp()
 }
 
 // Login function
-int login() {
+int login() 
+{
     char email[50], password[50], line[100];
     int found = 0;
 
@@ -150,7 +151,8 @@ int login() {
         return 1;
     }
 }
-//making a structure 
+
+// making a structure variable
 struct data 
 {
     char moviename[50];
@@ -213,7 +215,8 @@ void initializeMovieFiles()
         sprintf(filename, "movie%d.txt", i);//formatted string output
         FILE *fp = fopen(filename, "a");
         if (fp) fclose(fp);
-    }
+
+    return 0;
 }
 
 // Movie list
@@ -271,6 +274,7 @@ void booking(int c) //one integer argument, c, which represents the user's movie
         }
     }
 }
+
 // Load movie info
 void loadMovieData(struct data *movie, int tchoice) 
 {
@@ -289,7 +293,6 @@ void loadMovieData(struct data *movie, int tchoice)
         default: printf("Invalid movie choice.\n");
     }
 }
-
 
 // Check if seat is booked
 int isSeatBooked(int movieChoice, const char *seatCode) //movieChoice (an integer like 1, 2, etc.) and seatCode (a string like "A1")
@@ -322,12 +325,10 @@ void bookSeat(int movieChoice, const char *seatCode) //takes the movie choice an
     FILE *fp = fopen(filename, "a");//Append mode ensures that any new data written to the file will be added to the end of the file's current content
     if (!fp) 
 	{
-        printf("Error booking seat.\n");
+		printf("Error booking seat.\n");
         return;
     }
-
     fprintf(fp, "%s\n", seatCode);//writes the seatCode string 
     fclose(fp);
 }
-
 
