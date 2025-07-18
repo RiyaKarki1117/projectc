@@ -184,14 +184,14 @@ int main()
             if (login() != 0) 
 			{
 			   return 1;//After signing up, this line immediately calls the login() function. returns 0 on success and 1 on failure
-               break;
             }
+            break;
         case 2:
             if (login() != 0) //login function returns 0 when successful so login()!=0 means login wasnt successfull 
 			{
 			   return 1;
-               break;
             }
+            break;
         default:
             printf("Invalid option\n");
             return 1;
@@ -215,7 +215,7 @@ void initializeMovieFiles()
         sprintf(filename, "movie%d.txt", i);//formatted string output
         FILE *fp = fopen(filename, "a");
         if (fp) fclose(fp);
-
+    }
     return 0;
 }
 
