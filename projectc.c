@@ -216,7 +216,6 @@ void initializeMovieFiles()
         FILE *fp = fopen(filename, "a");
         if (fp) fclose(fp);
     }
-    return 0;
 }
 
 // Movie list
