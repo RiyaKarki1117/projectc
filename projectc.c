@@ -1,20 +1,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
 
 #define FILE_PATH "D:\\Riya\\pro.txt"
 #define ROWS 5
 #define COLS 6
  int i=0,j=0;
  char row,col;
-// Remove newline character
+// Removing newline character
 void remove_newline(char *str) 
 {
-    str[strcspn(str, "\n")] = '\0';//string complement span counts how many character from str1 is not in str2
+    str[strcspn(str, "\n")] = '\0';
 }
 
-// Validate email
+// Email validation
 int isValidEmail(const char *email) 
 {
     const char *at = strchr(email, '@');
@@ -22,7 +21,7 @@ int isValidEmail(const char *email)
 	{
 	    return 0;		
 	}
-    const char *dot = strchr(at, '.');//strchr (string function that searches for the first occurence of character in string)
+    const char *dot = strchr(at, '.');
     if (dot == NULL || dot == at + 1 || dot[1] == '\0') 
 	{
 		return 0;
@@ -42,7 +41,7 @@ void signUp()
 
     printf("------Sign Up------\n");
 
-    FILE *fp = fopen(FILE_PATH, "a+"); // Open for reading + appending
+    FILE *fp = fopen(FILE_PATH, "a+"); 
     if (!fp) 
 	{
         printf("Error opening file.\n");
@@ -61,12 +60,11 @@ void signUp()
         }
 
         // Check if email already exists
-        rewind(fp); // Move the file pointer to the beginning of the already opened file
+        rewind(fp); 
         while (fgets(line, sizeof(line), fp)) 
 		{
             char stored_email[50];
-            sscanf(line, "%[^,],%*s", stored_email); // sscanf is used for parsing formatted input from a string
-            // %[^,],%*s" format string It tells sscanf what pattern to look for in line
+            sscanf(line, "%[^,],%*s", stored_email); 
             if (strcmp(email, stored_email) == 0) 
 			{
                 exists = 1;
@@ -85,22 +83,22 @@ void signUp()
         }
     }
 
-    while (1) //This loop runs until you explicitly break out of it (when a valid password is entered)
+    while (1) 
 	{
         printf("Enter New Password (8-12 characters):\n");
-        fgets(password, sizeof(password), stdin);//Reads the password input from user and stores it in the password array.
+        fgets(password, sizeof(password), stdin);
         remove_newline(password);
-        size_t len = strlen(password);//Calculates the length of the password (excluding \0)
+        size_t len = strlen(password);
         if (len < 8 || len > 12) 
 		{
             printf("Password must be between 8 and 12 characters. Try again.\n");
         } 
 		else 
 		{
-		  break;//If the password length is valid, exits the while loop by calling break
+		  break;
 		}
     }
-    fprintf(fp, "%s,%s\n", email, password);//Writes the email and password pair to the file
+    fprintf(fp, "%s,%s\n", email, password);
     fclose(fp);
     printf("Sign Up successful!\n\n");
 }
@@ -128,14 +126,14 @@ int login()
     fgets(password, sizeof(password), stdin);
     remove_newline(password);
 
-    while (fgets(line, sizeof(line), fp)) //loop reads the file line by line,stops when fgets reaches the end of the file
+    while (fgets(line, sizeof(line), fp)) 
 	{
-        char stored_email[50], stored_password[50];//temporary character arrays declared to hold email password read from the current line of the file.
-        sscanf(line, "%[^,],%s", stored_email, stored_password);// It reads the contents of the line buffer
+        char stored_email[50], stored_password[50];
+        sscanf(line, "%[^,],%s", stored_email, stored_password);
 
-        if (strcmp(email, stored_email) == 0 && strcmp(password, stored_password) == 0) //checks if the user-entered email matches the one read from the file.
+        if (strcmp(email, stored_email) == 0 && strcmp(password, stored_password) == 0) 
 		{
-            found = 1;// If both strings match, the found flag is set to 1
+            found = 1;
             break;
         }
     }
@@ -171,7 +169,7 @@ void booking(int movieChoice);
 
 int main() 
 {
-    initializeMovieFiles();//creates the necessary files (movie1.txt etc.) that will store the booked seat data for each movie.
+    initializeMovieFiles();
     int choice;
     printf("1. Sign Up\n2. Log In\nChoose an option: ");
     scanf("%d", &choice);
@@ -183,11 +181,11 @@ int main()
             signUp();
             if (login() != 0) 
 			{
-			   return 1;//After signing up, this line immediately calls the login() function. returns 0 on success and 1 on failure
+			   return 1;
             }
             break;
         case 2:
-            if (login() != 0) //login function returns 0 when successful so login()!=0 means login wasnt successfull 
+            if (login() != 0) 
 			{
 			   return 1;
             }
@@ -201,7 +199,7 @@ int main()
     int mchoice;
     printf("\nEnter the movie number you want to book: ");
     scanf("%d", &mchoice);
-    getchar();//gets the newline character from input buffer
+    getchar();
     booking(mchoice);
     return 0;
 }
@@ -212,10 +210,11 @@ void initializeMovieFiles()
     for (i = 1; i <= 5; i++) 
 	{
         char filename[20];
-        sprintf(filename, "movie%d.txt", i);//formatted string output
+        sprintf(filename, "movie%d.txt", i);
         FILE *fp = fopen(filename, "a");
         if (fp) fclose(fp);
     }
+    return 0;
 }
 
 // Movie list
@@ -229,10 +228,10 @@ void displaymovie()
     printf("5. Legally Blonde  Time: 4:30 PM   Price: Rs 350/-\n");
 }
 
-// Booking flow
-void booking(int c) //one integer argument, c, which represents the user's movie choice
+// Booking ticket
+void booking(int c) 
 {
-    loadMovieData(&ticket, c);//fill the structure ticket with the correct movie name, time, and price based on the c(movie choice) value
+    loadMovieData(&ticket, c);
     printf("\nBooking for: %s\nTime: %s\nPrice: Rs %.2f\n", ticket.moviename, ticket.time, ticket.price);
     printf("\nAvailable seats (A1 to E6):\n");
     char seatCode[4];//character array to temporarily hold each seat code
@@ -248,17 +247,16 @@ void booking(int c) //one integer argument, c, which represents the user's movie
         }
         printf("\n");
     }
-
-    char userSeat[4];//Declares a character array to store the seat code the user enters
+//Booking seat
+    char userSeat[4];
     while (1) 
 	{
         printf("\nChoose a seat code to book (e.g., A1, B4): ");
         scanf("%s", userSeat);
-        //atoi function converts a string to an integer declared in the stdlib.h header file
         if (strlen(userSeat) < 2 || strlen(userSeat) > 3 || userSeat[0] < 'A' || userSeat[0] > 'E' || atoi(&userSeat[1]) < 1 || atoi(&userSeat[1]) > 6) 
 			{
             printf("Invalid seat code.\n");
-            continue;// sends the program back to the beginning of the while loop, prompting the user for input again
+            continue;
         }
 
         if (isSeatBooked(c, userSeat))
@@ -279,7 +277,7 @@ void loadMovieData(struct data *movie, int tchoice)
 {
     switch(tchoice) 
 	{
-        case 1: strcpy(movie->moviename, "Avengers"); strcpy(movie->time, "3:00 PM"); movie->price = 650; //copies "Avengers" into the moviename member of struct movie.
+        case 1: strcpy(movie->moviename, "Avengers"); strcpy(movie->time, "3:00 PM"); movie->price = 650; 
 		break;
         case 2: strcpy(movie->moviename, "The Conjuring"); strcpy(movie->time, "6:30 PM"); movie->price = 600; 
 		break;
@@ -294,40 +292,40 @@ void loadMovieData(struct data *movie, int tchoice)
 }
 
 // Check if seat is booked
-int isSeatBooked(int movieChoice, const char *seatCode) //movieChoice (an integer like 1, 2, etc.) and seatCode (a string like "A1")
+int isSeatBooked(int movieChoice, const char *seatCode) 
 {
-    char filename[20];//Declares a character array to store the name of the file (e.g., movie1.txt)
-    sprintf(filename, "movie%d.txt", movieChoice);//takes the format string "movie%d.txt" and replaces the %d with the value of movieChoice.
-    FILE *fp = fopen(filename, "r");//open the newly created filename in "read" mode
+    char filename[20];
+    sprintf(filename, "movie%d.txt", movieChoice);
+    FILE *fp = fopen(filename, "r");
     if (!fp) 
 	{
 		return 0;
 	}
-    char booked[4];//hold each seat code read from the file
-    while (fscanf(fp, "%s", booked) != EOF) //he loop continues as long as fscanf successfully reads a string.
+    char booked[4];
+    while (fscanf(fp, "%s", booked) != EOF) 
 	{
-        if (strcmp(booked, seatCode) == 0) //compares the seat code just read from the file (booked) with the seat code we're looking for
+        if (strcmp(booked, seatCode) == 0) 
 		{
             fclose(fp);
-            return 1;//returns 1 to indicate that the seat is booked.
+            return 1;
         }
     }
     fclose(fp);
-    return 0;//returns 0 to indicate that the seat is not booked
+    return 0;
 }
 
-// Book a seat
-void bookSeat(int movieChoice, const char *seatCode) //takes the movie choice and the seat code string
+// writing booked seat into file
+void bookSeat(int movieChoice, const char *seatCode) 
 {
     char filename[20];
-    sprintf(filename, "movie%d.txt", movieChoice);//creates the file name based on the movieChoice
-    FILE *fp = fopen(filename, "a");//Append mode ensures that any new data written to the file will be added to the end of the file's current content
+    sprintf(filename, "movie%d.txt", movieChoice);
+    FILE *fp = fopen(filename, "a");
     if (!fp) 
 	{
 		printf("Error booking seat.\n");
         return;
     }
-    fprintf(fp, "%s\n", seatCode);//writes the seatCode string 
+    fprintf(fp, "%s\n", seatCode);
     fclose(fp);
 }
 
